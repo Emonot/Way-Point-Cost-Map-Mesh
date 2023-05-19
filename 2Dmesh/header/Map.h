@@ -8,17 +8,24 @@
 struct Vector2D
 {
 	unsigned int x, y;
+
+	Vector2D();
+	Vector2D(int X, int Y);
+	unsigned int const multiply();
+	
 };
 
 class Map
 {
 private:
-	char* m_Map;
 	Vector2D size;
+	char* m_Map;
 
 public:
 
+	Map(std::ifstream m_My_File, char* map_Ptr);
 	Map(const Vector2D map_Size);
+	const Vector2D GetSize();
 	char* GetMap();
 	~Map();
 };

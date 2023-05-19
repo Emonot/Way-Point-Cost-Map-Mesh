@@ -41,5 +41,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="map_example.yaml" />
+    <None Include="map_example2.yaml" />
   </ItemGroup>
 </Project>

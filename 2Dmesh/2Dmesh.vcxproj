@@ -175,6 +175,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="map_example.yaml" />
+    <None Include="map_example2.yaml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
