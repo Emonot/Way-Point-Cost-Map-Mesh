@@ -9,25 +9,24 @@
 
 using String = std::string;
 
-
 FileManager::FileManager(String file_Name_Yaml, String file_Name_Pgm)
     : m_File_Name_Yaml(file_Name_Yaml), m_File_Name_Pgm(file_Name_Pgm)
 {
     m_My_File.open(file_Name_Yaml);
-    std::stringstream strStream;
-    strStream << m_My_File.rdbuf();
-    this->content_Yaml = strStream.str();
+    
+    this->mapStream << m_My_File.rdbuf();
+    this->content_Yaml = this->mapStream.str();
     m_My_File.close();
     m_My_File.open(file_Name_Pgm);
-    strStream.str("");
+    this->mapStream.str("");
     
     std::getline(m_My_File, this->version);
     std::getline(m_My_File, this->comment);
     std::getline(m_My_File, this->size);
     //std::getline(m_My_File, this->version); 
     //═ caractère ASCII 205
-    strStream << m_My_File.rdbuf();
-    this->content_Pgm = strStream.str();
+    this->mapStream << m_My_File.rdbuf();
+    this->content_Pgm = this->mapStream.str();
 }
 
 void FileManager::DisplayFile()
@@ -51,11 +50,42 @@ Vector2D FileManager::GetMapSize()
     return Vector2D(x_Size,y_Size); 
 }
 
-void FileManager::GetMapFromFile()
+Map FileManager::GetMapFromFile()
 {
-    std::stringstream strStream;
-
-    Map map(GetMapSize());
+    Vector2D mapLenghtWidth = GetMapSize();
+    int mapSize = mapLenghtWidth.multiply();
+    char* map_Array = new char[mapSize];
+    unsigned int n_oc = 0;
+    unsigned int n_ff = 0;
+    unsigned int n_un = 0;
+    for (int i = 0; i < mapSize; i++)
+    {
+        unsigned char pixelValue;
+        this->mapStream >> pixelValue;
+        map_Array[i] = static_cast<int>(pixelValue);
+    }
+    for (int i = 0; i < mapSize; i++)
+    {
+        //-51 doit correspondre à unkown
+        //-2 zone libre
+        //0 zone occupé je pense
+        switch (map_Array[i]) {
+            case -51:
+                map_Array[i] = UNKNOWN;
+                n_un++;
+                break;
+            case -2:
+                map_Array[i] = FREE;
+                n_ff++;
+                break;
+            case 0: 
+                map_Array[i] = OCCUPIED;
+                n_oc++;
+                break;
+     }
+    }
+    std::cout << "unknown : " << n_un << " free : " << n_ff << " occupied : " << n_oc << std::endl;
+    return Map(mapLenghtWidth, map_Array);
 }
 
 FileManager::~FileManager()
